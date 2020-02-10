@@ -1,0 +1,32 @@
+html {
+    font-family: Gill, Helvetica, sans-serif;
+    font-size: 16;
+    max-width: 900px;
+    margin: 30px;
+}
+
+div {
+    margin: 1px;
+}
+
+.form_text {
+    margin: 5px;
+    width: 250px;
+}
+
+.bubble {
+    background-color: #999;
+    width: 650px;
+    margin: 15px;
+}
+
+.sender {
+    background-color: #ccc;
+    padding: 4px 10px;
+    font-weight: bolder;
+}
+
+.message {
+    background-color: #ddd;
+    padding: 10px;
+}

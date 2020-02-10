@@ -1,0 +1,108 @@
+<html>
+	<head>
+	<title>Message Board Demo</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" type="text/css" href="style1.css">
+	<link rel="icon" href="favicon.ico" type="image/x-icon"/>
+	<link rel="shortcut icon" href="favicon.ico" type="image/x-icon"/>
+	</head>
+	<body>
+		<table>
+			<tr>
+				<td style="vertical-align:top;">
+					<div id="section_head">
+					<h2>Message Board Demo</h2>
+					</div>
+					<hr></hr>
+					<div id="section_content"  class="form_text">	
+						<div><input id="sender" type="text" placeholder="Your name" maxlength="10" ></div>
+						<div><textarea id="message" name="message" placeholder="No message" rows="10" maxlength="150" style="width:100%; margin:5px 0px;" ></textarea></div>
+						<button id="messageSend" onClick="postMessage()">Post</button>
+					</div>
+				</td>
+				<td>
+					<div class="section_content" id="section_messages">
+						<div class="bubble">
+							<div class="sender">User A</div>
+							<div class="message">"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."</div>
+						</div>
+						<div class="bubble">
+							<div class="sender">User B</div>
+							<div class="message">This is 2nd message.</div>
+						</div>
+						<div class="bubble">
+							<div class="sender">User C</div>
+							<div class="message">This is a message.</div>
+						</div>
+					</div>
+				</td>
+			</tr>
+		</table>
+	</body>
+
+	<script>
+		function postData(resource,param,onResult){
+			var xhttp1 = new XMLHttpRequest();
+			xhttp1.onreadystatechange = function(){
+				if (this.status == 200 && this.responseText.length) {
+					tmp = JSON.parse(this.responseText);
+					if(tmp) onResult(tmp);
+				}
+			};
+			xhttp1.open("POST", resource, true);
+			xhttp1.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+			xhttp1.send(param); 	
+		}
+		function getData(resource,onResult){
+			var xhttp1 = new XMLHttpRequest();
+			xhttp1.onreadystatechange = function(){
+				if (this.status == 200 && this.responseText.length) {
+					tmp = JSON.parse(this.responseText);
+					if(tmp) onResult(tmp);
+				}
+			};
+			xhttp1.open("GET", resource, true);
+			xhttp1.send();
+		}
+
+		function updateMessages(messages){
+			formattedMessages = '';
+
+			if(messages.sender.length>0)
+			{
+				messages.sender.forEach((e,i)=>{
+					formattedMessages += '<div class="bubble"><div class="sender">';
+					formattedMessages += decodeURIComponent(messages.sender[i]);
+					formattedMessages += '</div><div class="message">';
+					formattedMessages += decodeURIComponent(messages.message[i]);
+					formattedMessages += '</div></div>';
+				});
+			}
+			else
+			{
+					formattedMessages += '<div class="bubble"><div class="sender">';
+					formattedMessages += 'Board</div><div class="message">';
+					formattedMessages += 'The board could have a few posts...</div></div>';
+			}
+			document.getElementById("section_messages").innerHTML = formattedMessages;
+		}
+
+		function refresh(){
+			getData("messages", (messages)=>{ 
+				updateMessages(messages);
+			});
+		}
+
+		function postMessage(){			
+			var sender = document.getElementById("sender").value;
+			var msg = document.getElementById("message").value;
+			var param = 'sender="' + encodeURIComponent(sender) + '"&msg="' + encodeURIComponent(msg) + '"';
+			postData("new", param, (messages)=>{ 
+				updateMessages(messages);
+			});
+		}
+
+		refresh();
+		setInterval(refresh,5000);		
+	</script>
+</html>
